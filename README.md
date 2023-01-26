@@ -10,3 +10,6 @@ virtuelle personnelle.
 - [ ]  Un volume contenant votre base de données WordPress.
 - [ ]  Un second volume contenant les fichiers de votre site WordPress.
 - [ ]  Un docker-network qui fera le lien entre vos containers.
+
+## Schema
+<img src="./asset/schema.png" >
