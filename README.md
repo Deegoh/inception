@@ -12,4 +12,5 @@ virtuelle personnelle.
 - [ ]  Un docker-network qui fera le lien entre vos containers.
 
 ## Schema
-<img src="./asset/schema.png" >
+<p align="center"><img src="./asset/schema.png" ></p>
+
