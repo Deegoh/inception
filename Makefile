@@ -4,7 +4,12 @@ SRC = srcs
 ENV = $(SRC)/.env
 DOCKER = docker compose --project-directory $(SRC) --env-file $(ENV) -p $(NAME)
 
-.PHONY: all clean fclean re stop down
+N = nginx
+W = wordpress
+DB = mariadb
+A = adminer
+
+.PHONY: all clean fclean re stop down ps n w db a logn logw logdb loga
 
 all: $(NAME)
 
@@ -18,6 +23,33 @@ down:
 	$(DOCKER) down
 
 clean: stop
+
+ps:
+	$(DOCKER) ps -a
+
+n:
+	$(DOCKER) exec -it $(N) /bin/bash
+
+w:
+	$(DOCKER) exec -it $(W) /bin/bash
+
+db:
+	$(DOCKER) exec -it $(DB) /bin/bash
+
+a:
+	$(DOCKER) exec -it $(A) /bin/bash
+
+logn:
+	$(DOCKER) logs -f $(N)
+
+logw:
+	$(DOCKER) logs -f $(W)
+
+logdb:
+	$(DOCKER) logs -f $(DB)
+
+loga:
+	$(DOCKER) logs -f $(A)
 
 fclean: clean
 	$(DOCKER) down --volumes
