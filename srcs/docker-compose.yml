@@ -1,35 +1,38 @@
 services:
   nginx:
     image: nginx
-#    container_name: nginx
     ports:
-      - "8080:80"
       - "443:443"
     volumes:
-      - wordpress:/usr/share/nginx/html
+      - wordpress:/var/www/nginx
+      - ~/goinfre/inception/nginx/ssl:/etc/ssl/certs
+      - ~/goinfre/inception/nginx/config:/etc/nginx/conf.d
     networks:
       - lan
+    depends_on:
+      - wordpress
 
   wordpress:
-    image: wordpress
-    ports:
-      - "8081:80"
+    image: wordpress:5.1.1-fpm-alpine
     volumes:
       - ~/goinfre/inception/wordpress:/var/www/html #TODO DEBUG
       - wordpress:/var/www/html
     networks:
-        - lan
+      - lan
 
   mariadb:
     image: mariadb
     volumes:
       - ~/goinfre/inception/mariadb:/var/lib/mysql #TODO DEBUG
       - db:/var/lib/mysql
+    expose:
+      - ${DB_PORT}
     environment:
       MARIADB_ROOT_PASSWORD: ${DB_ROOT_PWD}
       MARIADB_USER: ${DB_USER}
       MARIADB_PASSWORD: ${DB_USER_PWD}
       MARIADB_DATABASE: ${DB_NAME}
+      MYSQL_TCP_PORT: ${DB_PORT}
     networks:
       - lan
 
