@@ -1,12 +1,14 @@
 services:
   nginx:
-    image: nginx
+    build: requirements/nginx
+#    image: nginx
     ports:
       - "443:443"
     volumes:
       - wordpress:/var/www/nginx
       - ${NGINX_SSL}:/etc/ssl/certs
-      - ${NGINX_CONF}:/etc/nginx/conf.d
+      - ${NGINX_CONF}:/etc/nginx/http.d #dockerfile
+#      - ${NGINX_CONF}:/etc/nginx/conf.d #stable
     networks:
       - lan
     depends_on:
@@ -14,7 +16,7 @@ services:
     restart: on-failure
 
   wordpress:
-    image: wordpress:5.1.1-fpm-alpine
+    image: wordpress:6.1.1-fpm-alpine
     volumes:
       - ${VOLUME_WP}:/var/www/html #TODO DEBUG
       - wordpress:/var/www/html
