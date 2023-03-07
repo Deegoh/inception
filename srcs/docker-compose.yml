@@ -21,15 +21,17 @@ services:
     volumes:
       - ${VOLUME_WP}:/var/www/html1 #TODO DEBUG
       - wordpress:/var/www/html
-      - ${WP_CONF}/wp-config.php:/var/www/html/wp-config.php
+#      - ${WP_CONF}/wp-config.php:/var/www/html/wp-config.php
     environment:
       WORDPRESS_DB_HOST: ${WP_DB_HOST}
       WORDPRESS_DB_USER: ${DB_USER}
       WORDPRESS_DB_PASSWORD: ${DB_USER_PWD}
       WORDPRESS_DB_NAME: ${DB_NAME}
       WORDPRESS_TABLE_PREFIX: ${WP_TABLE_PREFIX}
-      WORDPRESS_DEBUG: 1
-      WP_ENV_PORT: 9000
+      WORDPRESS_ADM_USER: ${WP_ADM_USER}
+      WORDPRESS_ADM_PASSWORD: ${WP_ADM_PASSWORD}
+      WORDPRESS_URL: ${WP_URL}
+      WORDPRESS_TITLE: ${WP_TITLE}
     networks:
       - lan
     depends_on:
@@ -48,7 +50,7 @@ services:
       MARIADB_ROOT_PASSWORD: ${DB_ROOT_PWD}
       MARIADB_USER: ${DB_USER}
       MARIADB_PASSWORD: ${DB_USER_PWD}
-      MARIADB_DATABASE: ${DB_NAME}
+#      MARIADB_DATABASE: ${DB_NAME}
       MYSQL_TCP_PORT: ${DB_PORT}
     networks:
       - lan

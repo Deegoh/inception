@@ -57,8 +57,8 @@ buildn:
 buildwp:
 	#docker rm inception_wp
 	docker build -t inception_wp srcs/requirements/wordpress
-	docker run --name inception_wp --env-file=srcs/.env -dp 9000:9000 inception_wp sleep infinity
-	docker exec -it inception_wp /bin/bash
+#	docker run --name inception_wp --env-file=srcs/.env -dp 9000:9000 inception_wp sleep infinity
+#	docker exec -it inception_wp /bin/bash
 
 logn:
 	$(DOCKER) logs -f $(N)
