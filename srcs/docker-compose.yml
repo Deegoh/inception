@@ -16,13 +16,26 @@ services:
     restart: on-failure
 
   wordpress:
-    image: wordpress:6.1.1-fpm-alpine
+    build: requirements/wordpress
+#    image: wordpress:6.1.1-fpm-alpine
     volumes:
-      - ${VOLUME_WP}:/var/www/html #TODO DEBUG
+      - ${VOLUME_WP}:/var/www/html1 #TODO DEBUG
       - wordpress:/var/www/html
+      - ${WP_CONF}/wp-config.php:/var/www/html/wp-config.php
+    environment:
+      WORDPRESS_DB_HOST: ${WP_DB_HOST}
+      WORDPRESS_DB_USER: ${DB_USER}
+      WORDPRESS_DB_PASSWORD: ${DB_USER_PWD}
+      WORDPRESS_DB_NAME: ${DB_NAME}
+      WORDPRESS_TABLE_PREFIX: ${WP_TABLE_PREFIX}
+      WORDPRESS_DEBUG: 1
+      WP_ENV_PORT: 9000
     networks:
       - lan
+    depends_on:
+      - mariadb
     restart: on-failure
+    command: tail -f /dev/null
 
   mariadb:
     image: mariadb

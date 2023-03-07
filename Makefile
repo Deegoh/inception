@@ -12,9 +12,9 @@ W = wordpress
 DB = mariadb
 A = adminer
 
-.PHONY: all clean fclean re stop down ps n w db a logn logw logdb loga dir buildn prune
+.PHONY: all clean fclean re stop down ps n wp db a logn logw logdb loga dir buildn prune
 
-all: $(NAME)
+all: dir $(NAME)
 
 dir:
 	$(MKDIR) $(VOLUME_DIR)
@@ -41,7 +41,7 @@ ps:
 n:
 	$(DOCKER) exec -it $(N) /bin/bash
 
-w:
+wp:
 	$(DOCKER) exec -it $(W) /bin/bash
 
 db:
@@ -53,6 +53,12 @@ a:
 buildn:
 	docker build -t inception_nginx srcs/requirements/nginx
 	#docker run -dp 8080:80 inception_nginx nginx -g 'daemon off;'
+
+buildwp:
+	#docker rm inception_wp
+	docker build -t inception_wp srcs/requirements/wordpress
+	docker run --name inception_wp --env-file=srcs/.env -dp 9000:9000 inception_wp sleep infinity
+	docker exec -it inception_wp /bin/bash
 
 logn:
 	$(DOCKER) logs -f $(N)
