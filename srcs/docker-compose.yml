@@ -1,7 +1,6 @@
 services:
   nginx:
     build: requirements/nginx
-#    image: nginx
     ports:
       - "443:443"
     volumes:
@@ -17,11 +16,9 @@ services:
 
   wordpress:
     build: requirements/wordpress
-#    image: wordpress:6.1.1-fpm-alpine
     volumes:
-      - ${VOLUME_WP}:/var/www/html1 #TODO DEBUG
-      - wordpress:/var/www/html
-#      - ${WP_CONF}/wp-config.php:/var/www/html/wp-config.php
+#      - ${VOLUME_WP}:/var/www/html
+      - wordpress:/var/www/html #TODO DEBUG
     environment:
       WORDPRESS_DB_HOST: ${WP_DB_HOST}
       WORDPRESS_DB_USER: ${DB_USER}
@@ -37,20 +34,19 @@ services:
     depends_on:
       - mariadb
     restart: on-failure
-    command: tail -f /dev/null
 
   mariadb:
     image: mariadb
     volumes:
-      - ${VOLUME_DB}:/var/lib/mysql #TODO DEBUG
-      - db:/var/lib/mysql
+#      - ${VOLUME_DB}:/var/lib/mysql
+      - db:/var/lib/mysql #TODO DEBUG
     expose:
       - ${DB_PORT}
     environment:
       MARIADB_ROOT_PASSWORD: ${DB_ROOT_PWD}
       MARIADB_USER: ${DB_USER}
       MARIADB_PASSWORD: ${DB_USER_PWD}
-#      MARIADB_DATABASE: ${DB_NAME}
+      MARIADB_DATABASE: ${DB_NAME}
       MYSQL_TCP_PORT: ${DB_PORT}
     networks:
       - lan
