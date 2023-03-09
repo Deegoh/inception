@@ -36,7 +36,8 @@ services:
     restart: on-failure
 
   mariadb:
-    image: mariadb
+#    image: mariadb
+    build: requirements/mariadb
     volumes:
 #      - ${VOLUME_DB}:/var/lib/mysql
       - db:/var/lib/mysql #TODO DEBUG
@@ -50,7 +51,7 @@ services:
       MYSQL_TCP_PORT: ${DB_PORT}
     networks:
       - lan
-    restart: on-failure
+#    restart: on-failure
 
   adminer:
     image: adminer

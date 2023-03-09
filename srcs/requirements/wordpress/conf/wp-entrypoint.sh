@@ -1,5 +1,6 @@
 #!/bin/sh
 
+sleep 20
 echo "run wp"
 if [ ! -e /var/www/html/wp-config.php ]; then
   echo "wp install"

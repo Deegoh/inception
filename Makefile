@@ -14,7 +14,10 @@ A = adminer
 
 .PHONY: all clean fclean re stop down ps n wp db a logn logw logdb loga dir buildn buildwp builddb prune
 
-all: dir buildwp buildn $(NAME)
+$(NAME):
+	$(DOCKER) up -d
+
+all: dir builddb buildwp buildn $(NAME)
 
 dir:
 	$(MKDIR) $(VOLUME_DIR)
@@ -23,9 +26,6 @@ dir:
 	#$(MKDIR) $(NGINX_DIR)
 	#$(MKDIR) $(NGINX_SSL)
 	#$(MKDIR) $(NGINX_CONF)
-
-$(NAME):
-	$(DOCKER) up -d
 
 stop:
 	$(DOCKER) stop
@@ -60,11 +60,11 @@ buildwp:
 #	docker exec -it inception_wp /bin/bash
 
 builddb:
-	docker stop inception_mariadb
-	docker rm inception_mariadb
+	#docker stop inception_mariadb
+	#docker rm inception_mariadb
 	docker build -t inception_mariadb srcs/requirements/mariadb
-	docker run --name inception_mariadb --env-file=srcs/.env -dp 3306:3306 inception_mariadb sleep infinity
-	docker exec -it inception_mariadb /bin/bash
+	#docker run --name inception_mariadb --env-file=srcs/.env -dp 3306:3306 inception_mariadb sleep infinity
+	#docker exec -it inception_mariadb /bin/bash
 
 logn:
 	$(DOCKER) logs -f $(N)

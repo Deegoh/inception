@@ -13,6 +13,11 @@ RUN #mkdir "/etc/init.d/mariadb/"
 
 EXPOSE 3306
 
+COPY conf/db-entrypoint.sh /
+RUN chmod +x /db-entrypoint.sh
+
+ENTRYPOINT ["/bin/sh", "/db-entrypoint.sh"]
+
 #CMD ["sleep infinity"]
 
 # vim my.cnf.d/mariadb-server.cnf
