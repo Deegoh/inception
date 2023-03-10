@@ -1,46 +1,54 @@
-#!/bin/sh
+#!/bin/bash
 
-echo "install mariadb"
-mariadb-install-db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
+if [ ! -d /var/lib/mysql/mysql ]; then
+  echo "install mariadb"
 
-sed -i "s|.*bind-address\s*=.*|bind-address=0.0.0.0|g" /etc/my.cnf.d/mariadb-server.cnf
+  echo "setup folder rights"
+  mkdir -p /auth_pam_tool_dir
+  mkdir -p /auth_pam_tool_dir/auth_pam_tool
+  chown -R mysql /auth_pam_tool_dir
+  chgrp -R mysql /auth_pam_tool_dir
 
-echo "Run on background mariadb"
-mariadbd-safe --nowatch --datadir='/var/lib/mysql'
+  mariadb-install-db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
 
-sleep 10
+  sed -i "s|.*bind-address\s*=.*|bind-address=0.0.0.0|g" /etc/my.cnf.d/mariadb-server.cnf
+  sed -i "s|.*skip-networking.*|#skip-networking|g" /etc/my.cnf.d/mariadb-server.cnf
 
-echo "Secure mariadb"
-#remove root account accessible from outside
-#echo "rm outside"
-#mariadb -e "DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');"
-#remove anonymous accounts
-echo "rm anonymous"
-mariadb -e "DELETE FROM mysql.user WHERE User='';"
-#remove test database
-echo "drop test"
-mariadb -e "DROP DATABASE IF EXISTS test;"
-#change root pwd
+  echo "Run on background mariadb"
+  mariadbd-safe --nowatch --datadir='/var/lib/mysql'
 
-#setup wp sb
-echo "Setup database wordpress"
-echo "ads db"
-mariadb -e "CREATE DATABASE ${MARIADB_DATABASE};"
-echo "add usr"
-mariadb -e "CREATE USER '${MARIADB_USER}'@'%' IDENTIFIED BY '${MARIADB_PASSWORD}';"
-echo "grand priv"
-mariadb -e "GRANT ALL PRIVILEGES ON ${MARIADB_DATABASE}.* TO '${MARIADB_USER}'@'%';"
+  while ! mysqladmin ping -h ${MARIADB_HOST} --silent; do
+    sleep 1
+    echo "waiting for process mariadbd-safe"
+  done
 
-echo "add pwd"
-mariadb -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${MARIADB_ROOT_PASSWORD}';"
-mariadb -e "FLUSH PRIVILEGES;"
+  #secure mariadb
+  echo "Secure mariadb"
+  #remove anonymous accounts
+  mariadb -e "DELETE FROM mysql.user WHERE User='';"
+  #remove test database
+  mariadb -e "DROP DATABASE IF EXISTS test;"
+  #remove root account accessible from outside
+  mariadb -e "DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');"
 
-echo "kill maria"
-pkill mariadbd-safe
+  #setup wp db
+  echo "Setup database wordpress"
+  mariadb -e "CREATE DATABASE ${MARIADB_DATABASE};"
+  mariadb -e "CREATE USER '${MARIADB_USER}'@'%' IDENTIFIED BY '${MARIADB_PASSWORD}';"
+  mariadb -e "GRANT ALL PRIVILEGES ON ${MARIADB_DATABASE}.* TO '${MARIADB_USER}'@'%';"
 
-#setup wp sb
-echo "reRun mariadb"
-mariadbd-safe --datadir='/var/lib/mysql'
-sleep infinity
+  #change root pwd
+  mariadb -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${MARIADB_ROOT_PASSWORD}';"
+  #apply config db
+  mariadb -e "FLUSH PRIVILEGES;"
 
-SELECT user, host, password from mysql.user;
+  sleep 1
+  echo "restart mariadb"
+  pkill maria
+
+else
+  echo "Already installed"
+fi
+
+  echo "start mariadb"
+  mariadbd-safe --datadir='/var/lib/mysql'
