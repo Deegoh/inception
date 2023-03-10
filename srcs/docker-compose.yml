@@ -8,6 +8,8 @@ services:
       - ${NGINX_SSL}:/etc/ssl/certs
       - ${NGINX_CONF}:/etc/nginx/http.d #dockerfile
 #      - ${NGINX_CONF}:/etc/nginx/conf.d #stable
+    environment:
+      NGINX_HOST: ${DB_HOST}
     networks:
       - lan
     depends_on:
@@ -20,13 +22,15 @@ services:
 #      - ${VOLUME_WP}:/var/www/html
       - wordpress:/var/www/html #TODO DEBUG
     environment:
-      WORDPRESS_DB_HOST: ${WP_DB_HOST}
+      WORDPRESS_DB_HOST: ${DB_HOST}
       WORDPRESS_DB_USER: ${DB_USER}
       WORDPRESS_DB_PASSWORD: ${DB_USER_PWD}
       WORDPRESS_DB_NAME: ${DB_NAME}
       WORDPRESS_TABLE_PREFIX: ${WP_TABLE_PREFIX}
       WORDPRESS_ADM_USER: ${WP_ADM_USER}
       WORDPRESS_ADM_PASSWORD: ${WP_ADM_PASSWORD}
+      WORDPRESS_USER: ${WP_USER}
+      WORDPRESS_PASSWORD: ${WP_PASSWORD}
       WORDPRESS_URL: ${WP_URL}
       WORDPRESS_TITLE: ${WP_TITLE}
     networks:
@@ -44,6 +48,7 @@ services:
     expose:
       - ${DB_PORT}
     environment:
+      MARIADB_HOST: ${DB_HOST}
       MARIADB_ROOT_PASSWORD: ${DB_ROOT_PWD}
       MARIADB_USER: ${DB_USER}
       MARIADB_PASSWORD: ${DB_USER_PWD}
@@ -51,7 +56,7 @@ services:
       MYSQL_TCP_PORT: ${DB_PORT}
     networks:
       - lan
-#    restart: on-failure
+    restart: on-failure
 
   adminer:
     image: adminer
