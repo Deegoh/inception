@@ -50,5 +50,5 @@ else
   echo "Already installed"
 fi
 
-  echo "start mariadb"
-  mariadbd-safe --datadir='/var/lib/mysql'
+echo "start mariadb"
+mariadbd-safe --datadir='/var/lib/mysql'

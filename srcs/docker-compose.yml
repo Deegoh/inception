@@ -4,12 +4,13 @@ services:
     ports:
       - "443:443"
     volumes:
-      - wordpress:/var/www/nginx
+      - ${VOLUME_WP}:/var/www/nginx
+#      - wordpress:/var/www/nginx #TODO DEBUG
       - ${NGINX_SSL}:/etc/ssl/certs
       - ${NGINX_CONF}:/etc/nginx/http.d #dockerfile
 #      - ${NGINX_CONF}:/etc/nginx/conf.d #stable
     environment:
-      NGINX_HOST: ${DB_HOST}
+      NGINX_HOST: ${WP_URL}
     networks:
       - lan
     depends_on:
@@ -19,8 +20,8 @@ services:
   wordpress:
     build: requirements/wordpress
     volumes:
-#      - ${VOLUME_WP}:/var/www/html
-      - wordpress:/var/www/html #TODO DEBUG
+      - ${VOLUME_WP}:/var/www/html
+#      - wordpress:/var/www/html #TODO DEBUG
     environment:
       WORDPRESS_DB_HOST: ${DB_HOST}
       WORDPRESS_DB_USER: ${DB_USER}
@@ -40,11 +41,10 @@ services:
     restart: on-failure
 
   mariadb:
-#    image: mariadb
     build: requirements/mariadb
     volumes:
-#      - ${VOLUME_DB}:/var/lib/mysql
-      - db:/var/lib/mysql #TODO DEBUG
+      - ${VOLUME_DB}:/var/lib/mysql
+#      - db:/var/lib/mysql #TODO DEBUG
     expose:
       - ${DB_PORT}
     environment:
@@ -58,17 +58,17 @@ services:
       - lan
     restart: on-failure
 
-  adminer:
-    image: adminer
-    ports:
-      - "8082:8080"
-    networks:
-      - lan
-    restart: on-failure
+#  adminer: #TODO debug
+#    image: adminer
+#    ports:
+#      - "8082:8080"
+#    networks:
+#      - lan
+#    restart: on-failure
 
-volumes:
-  wordpress:
-  db:
+#volumes: #TODO debug
+#  wordpress:
+#  db
 
 networks:
   lan:
