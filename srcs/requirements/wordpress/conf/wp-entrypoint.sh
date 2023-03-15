@@ -13,7 +13,7 @@ if [ ! -e /var/www/html/wp-config.php ]; then
   wp core install --path=/var/www/html --url=${WORDPRESS_URL} --title="${WORDPRESS_TITLE}" --admin_user=${WORDPRESS_ADM_USER} --admin_password=${WORDPRESS_ADM_PASSWORD} --admin_email="${WORDPRESS_ADM_USER}@${WORDPRESS_URL}.ch"
 
   echo "create user"
-  wp user create ${WORDPRESS_USER} {WORDPRESS_USER}@${WORDPRESS_URL}.com --user_pass=${WORDPRESS__PASSWORD} --path=/var/www/html
+  wp user create ${WORDPRESS_USER} ${WORDPRESS_USER}@${WORDPRESS_URL}.com --user_pass=${WORDPRESS_PASSWORD} --path=/var/www/html
 else
   echo "wp already install"
 fi
